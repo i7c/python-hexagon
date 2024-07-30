@@ -1,0 +1,13 @@
+[project]
+name = "hexagon"
+description = "Thin layer over flask and inject to create hexagonal web services with WSGI"
+maintainers = [{name = "Constantin Michael Weisser", email = "cmw@weisser-se.com"}]
+requires-python = ">=3.9"
+dependencies = [
+             'aws-lambda-wsgi==0.0.6',
+             'flask-cors==4.0.0',
+             'flask==3.0.1',
+             'schema==0.7.5',
+             ]
+
+version = "2024.7.30.0"
