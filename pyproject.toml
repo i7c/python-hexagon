@@ -8,6 +8,7 @@ dependencies = [
              'flask-cors==4.0.0',
              'flask==3.0.1',
              'schema==0.7.5',
+             'PyHamcrest==2.1.0',
              ]
 
 version = "2024.7.30.0"
