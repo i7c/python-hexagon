@@ -21,8 +21,7 @@ class WsgiRequestBuilder(object):
         # type: () -> dict[str, Any]
         return {
             'httpMethod': self.method,
-            'headers': {
-            },
+            'headers': self.headers,
             'path': self.path,
             'queryStringParameters': self.query_params
         }
