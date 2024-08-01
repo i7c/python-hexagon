@@ -5,5 +5,5 @@ def no_caching_interceptor(r):
     return r
 
 
-def no_caching(app):
+def configure_no_caching(app):
     app.after_request(no_caching_interceptor)

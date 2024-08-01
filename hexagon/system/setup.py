@@ -1,5 +1,5 @@
-from .cache import no_caching
 from flask_cors import CORS
+from hexagon.http.cache_config import configure_no_caching
 
 
 def default_setup(app):
@@ -12,5 +12,5 @@ def default_setup(app):
             "http://localhost:8080",
         ]
     CORS(app)
-    no_caching(app)
+    configure_no_caching(app)
     return app
