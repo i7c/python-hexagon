@@ -20,7 +20,7 @@ class ContextTest(unittest.TestCase):
 
         with app.test_request_context():
             ctx = MyContext1()
-            sut.register(ctx)
+            sut.register_context(app, ctx)
 
             resp = response(app, {
                 'httpMethod': 'GET',
@@ -35,22 +35,11 @@ class ContextTest(unittest.TestCase):
         app = Flask("testapp")
 
         @app.route("/")
-        @sut.ctx
         def handler():
             return "5"
 
-        with app.test_request_context():
-            resp = response(
-                app,
-                {
-                    'httpMethod': 'GET',
-                    'queryStringParameters': {},
-                    'path': '/',
-                    'headers': {'x-forwarded-proto': 'http'}
-                },
-                None
-            )
-            assert_that(resp['statusCode'], 500)
+        assert_that(calling(sut.ctx).with_args(handler),
+                    raises(RuntimeError))
 
     def test_failed_context_injection_missing_register(self):
         app = Flask("testapp")
