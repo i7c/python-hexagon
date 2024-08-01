@@ -11,4 +11,4 @@ dependencies = [
              'PyHamcrest==2.1.0',
              ]
 
-version = "2024.7.31.4"
+version = "2024.7.31.5"
