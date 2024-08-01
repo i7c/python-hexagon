@@ -1,4 +1,6 @@
-from typing import Any, Callable, List, Dict
+from flask import Flask
+from typing import Any, Callable, List, Dict, Optional
+import aws_lambda_wsgi
 
 
 class WsgiRequestBuilder(object):
@@ -22,9 +24,14 @@ class WsgiRequestBuilder(object):
             'queryStringParameters': self.query_params
         }
 
-    def make(self, handler):
-        # type: (Callable[[dict, Any], Any]) -> Any
-        return handler(self.render(), None)
+    def make(self, handler=None, app=None):
+        # type: (Optional[Callable[[dict, Any], Any]], Optional[Flask]) -> Any
+        if app:
+            return aws_lambda_wsgi.response(app, self.render(), None)
+        elif handler:
+            return handler(self.render(), None)
+        else:
+            raise ValueError("You need to pass either an app or a handler")
 
     def with_path(self, p):
         # type: (str) -> WsgiRequestBuilder
