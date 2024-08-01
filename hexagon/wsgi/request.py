@@ -12,7 +12,7 @@ class WsgiRequestBuilder(object):
         return {
             'httpMethod': self.method,
             'headers': {
-                'x-forwarded-for': self.proxies,
+                'x-forwarded-for': ", ".join(self.proxies),
                 'x-forwarded-proto': self.protocol,
             },
             'path': self.path,
