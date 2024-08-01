@@ -1,4 +1,5 @@
 from flask import Flask
+import aws_lambda_wsgi
 
 _app: Flask = None
 
@@ -16,7 +17,8 @@ def App(app_name: str):
     return _app
 
 
-def app():
+def app_exec(event, context):
     global _app
     if not _app:
         raise RuntimeError("App singleton has not been created. Forgot to call App()?")
+    return aws_lambda_wsgi.response(_app, event, context)
