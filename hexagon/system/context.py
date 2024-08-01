@@ -16,15 +16,13 @@ def ctx(func):
             "Function {} annotated with @ctx, but no ctx param found.".format(
                 func.__name__
             ))
-    nargs = list(args)
-    ctx_index = args.index('ctx')
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         if "hexagon.system.context" not in current_app.extensions:
             raise ValueError("No context found but injection requested. Did you forget to register it in app setup?")
-        nargs[ctx_index] = current_app.extensions.get("hexagon.system.context")
-        return func(*nargs, **kwargs)
+        kwargs['ctx'] = current_app.extensions.get("hexagon.system.context")
+        return func(*args, **kwargs)
 
     return wrapper
 
