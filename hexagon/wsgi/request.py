@@ -17,6 +17,11 @@ class WsgiRequestBuilder(object):
             'x-forwarded-proto': 'http',
         }
 
+        self.app: Flask = None
+        self.handler: Optional[Callable[[Dict[Any, Any], Any], Any]] = None
+
+        self.parse_json_response: bool = True
+
     def render(self):
         # type: () -> dict[str, Any]
         return {
@@ -35,11 +40,12 @@ class WsgiRequestBuilder(object):
         else:
             raise ValueError("You need to pass either an app or a handler")
 
-    def make(self, handler=None, app=None):
-        # type: (Optional[Callable[[dict, Any], Any]], Optional[Flask]) -> Any
-        response = self.perform_request_against_app_or_handler(handler=handler, app=app)
+    def make(self):
+        # type: () -> Any
+        response = self.perform_request_against_app_or_handler(handler=self.handler, app=self.app)
         try:
-            response['body'] = json.loads(response['body'])
+            if self.parse_json_response:
+                response['body'] = json.loads(response['body'])
         except Exception:
             pass
         return response
@@ -57,6 +63,26 @@ class WsgiRequestBuilder(object):
     def with_query_param(self, k, v):
         # type (str, str) -> WsgiRequestBuilder
         self.query_params[k] = v
+        return self
+
+    def on_handler(self, h):
+        # type (Callable[[Dict[Any, Any], Any], Any]) -> WsgiRequestBuilder
+        self.handler = h
+        return self
+
+    def on_app(self, a):
+        # type (Flask) -> WsgiRequestBuilder
+        self.app = a
+        return self
+
+    def returning_json_response(self):
+        # type: () -> WsgiRequestBuilder
+        self.parse_json_response = True
+        return self
+
+    def returning_raw_response(self):
+        # type: () -> WsgiRequestBuilder
+        self.parse_json_response = False
         return self
 
 
