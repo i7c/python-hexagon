@@ -4,11 +4,12 @@ description = "Thin layer over flask and inject to create hexagonal web services
 maintainers = [{name = "Constantin Michael Weisser", email = "cmw@weisser-se.com"}]
 requires-python = ">=3.9"
 dependencies = [
+             'PyHamcrest==2.1.0',
              'aws-lambda-wsgi==0.0.6',
              'flask-cors==4.0.0',
              'flask==3.0.1',
+             'pynamodb==6.0.1',
              'schema==0.7.5',
-             'PyHamcrest==2.1.0',
              ]
 
 version = "2024.8.3.3"
