@@ -1,5 +1,6 @@
 from flask import Flask
-from typing import Any, Callable, List, Dict, Optional
+from hexagon.wsgi.response import WsgiResponse
+from typing import Any, Callable, Dict, Optional
 import aws_lambda_wsgi
 import json
 
@@ -7,6 +8,7 @@ import json
 class WsgiRequestBuilder(object):
     def __init__(self):
         # type: () -> None
+        self.body: Any = None
         self.method: str = 'GET'
         self.path: str = '/'
         self.query_params: Dict[str, str] = {}
@@ -17,19 +19,22 @@ class WsgiRequestBuilder(object):
             'x-forwarded-proto': 'http',
         }
 
-        self.app: Flask = None
+        self.app: Optional[Flask] = None
         self.handler: Optional[Callable[[Dict[Any, Any], Any], Any]] = None
 
         self.parse_json_response: bool = True
 
     def render(self):
         # type: () -> dict[str, Any]
-        return {
+        request = {
             'httpMethod': self.method,
             'headers': self.headers,
             'path': self.path,
             'queryStringParameters': self.query_params
         }
+        if self.body:
+            request['body'] = self.body
+        return request
 
     def perform_request_against_app_or_handler(self, handler=None, app=None):
         # type: (Optional[Callable[[dict, Any], Any]], Optional[Flask]) -> Any
@@ -42,13 +47,16 @@ class WsgiRequestBuilder(object):
 
     def make(self):
         # type: () -> Any
-        response = self.perform_request_against_app_or_handler(handler=self.handler, app=self.app)
+        response = self.perform_request_against_app_or_handler(
+            handler=self.handler,
+            app=self.app
+        )
         try:
             if self.parse_json_response:
                 response['body'] = json.loads(response['body'])
         except Exception:
             pass
-        return response
+        return WsgiResponse(response)
 
     def with_path(self, p):
         # type: (str) -> WsgiRequestBuilder
@@ -58,6 +66,13 @@ class WsgiRequestBuilder(object):
     def with_method(self, m):
         # type (str) -> WsgiRequestBuilder
         self.method = m
+        return self
+
+    def with_json_body(self, b):
+        # type (Any) -> WsgiRequestBuilder
+        self.headers['content-type'] = 'application/json'
+        self.headers['accept'] = 'application/json'
+        self.body = json.dumps(b)
         return self
 
     def with_query_param(self, k, v):
