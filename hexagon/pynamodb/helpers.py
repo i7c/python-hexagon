@@ -25,7 +25,7 @@ def attribute_members(m: Callable) -> List[Tuple[str, Attribute]]:
     )
 
 
-def schema_from_model(m: Callable) -> Schema:
+def schema_from_model(m: Model) -> Schema:
     candidates = attribute_members(m)
     return Schema({
         n: schema_from_attr(attr) for n, attr in candidates

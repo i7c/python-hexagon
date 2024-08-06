@@ -42,7 +42,7 @@ class TestPynamodbHelpers(unittest.TestCase):
             raises(s.SchemaError)
         )
 
-    def test_automatic_validation(self):
+    def test_gest_instance_values_from_model_description(self):
         class TestModel(Model):
             class Meta:
                 table_name = "foobla"
