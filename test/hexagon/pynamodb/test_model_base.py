@@ -40,3 +40,14 @@ class TestModelBase(unittest.TestCase):
             ),
             raises(SchemaError)
         )
+
+    def test_meta_class(self):
+        class SomeModel(ModelBase):
+            class Meta:
+                table_name = "UNDEFINED"
+            pass
+
+        assert_that(SomeModel.Meta.table_name, equal_to("UNDEFINED"))
+
+        SomeModel.Meta.table_name = "derp"
+        assert_that(ModelBase.Meta.table_name, equal_to("UNDEFINED"))
