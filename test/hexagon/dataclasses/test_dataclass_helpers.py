@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from hamcrest import assert_that, equal_to
-import hexagon.dataclasses.promotion as sut
+from typing import Optional
+import hexagon.dataclasses as sut
 import unittest
 
 
-class TestDataclassesPromotion(unittest.TestCase):
+class TestDataclassHelpers(unittest.TestCase):
 
     def test_simple_promotion(self):
 
@@ -31,4 +32,20 @@ class TestDataclassesPromotion(unittest.TestCase):
             "foo",
             "bla",
             barb=1010,
+        )
+
+    def test_as_dict(self):
+        @dataclass
+        class Bar:
+            x: str
+            y: Optional[int]
+
+        assert_that(
+            sut.as_dict(Bar(x="foo", y=10)),
+            equal_to({'x': 'foo', 'y': 10})
+        )
+
+        assert_that(
+            sut.as_dict(Bar(x="foo", y=None)),
+            equal_to({'x': 'foo'})
         )
