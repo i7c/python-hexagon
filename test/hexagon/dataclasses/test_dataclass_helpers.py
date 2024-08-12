@@ -49,3 +49,22 @@ class TestDataclassHelpers(unittest.TestCase):
             sut.as_dict(Bar(x="foo", y=None)),
             equal_to({'x': 'foo'})
         )
+
+    def test_as_obj_with_lists(self):
+        @dataclass
+        class Baz:
+            x: str
+            y: str
+
+        assert_that(
+            sut.as_obj(
+                [
+                    Baz("asdf", "jkl"),
+                    Baz("qwer", "uipo")
+                ]
+            ),
+            equal_to([
+                {"x": "asdf", "y": "jkl"},
+                {"x": "qwer", "y": "uipo"}
+            ])
+        )
