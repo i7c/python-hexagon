@@ -3,6 +3,10 @@ from functools import wraps
 from typing import Any
 
 
+def context_of(app: Flask):
+    return app.extensions.get("hexagon.system.context")
+
+
 def ctx(func):
     """
     Injects the hexagon context into a function. The annotated
@@ -21,7 +25,7 @@ def ctx(func):
     def wrapper(*args, **kwargs):
         if "hexagon.system.context" not in current_app.extensions:
             raise ValueError("No context found but injection requested. Did you forget to register it in app setup?")
-        kwargs['ctx'] = current_app.extensions.get("hexagon.system.context")
+        kwargs['ctx'] = context_of(current_app)
         return func(*args, **kwargs)
 
     return wrapper
