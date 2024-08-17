@@ -13,4 +13,4 @@ dependencies = [
              'schema==0.7.5',
              ]
 
-version = "2024.8.17.0"
+version = "2024.8.17.1"

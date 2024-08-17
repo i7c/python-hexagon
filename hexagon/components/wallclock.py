@@ -1,5 +1,15 @@
-import time
+from typing import runtime_checkable, Protocol
 import random
+import time
+
+
+@runtime_checkable
+class WallclockProto(Protocol):
+    def now(self, tnow: float = None) -> float:
+        ...
+
+    def nowi(self, tnowi: int = None) -> int:
+        ...
 
 
 class Wallclock(object):
