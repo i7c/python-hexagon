@@ -1,7 +1,8 @@
 from hexagon.pynamodb.helpers import dict_from_model_instance, schema_from_model
+from pynamodb.expressions.condition import Condition
 from pynamodb.models import Model, _KeyType
 from schema import Schema
-from typing import Optional, Any
+from typing import Any, Dict, Optional
 
 
 class ModelBase(Model):

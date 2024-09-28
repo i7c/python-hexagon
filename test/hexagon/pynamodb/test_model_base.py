@@ -1,28 +1,22 @@
-import unittest
-
 from hamcrest import assert_that, calling, equal_to, instance_of, is_not, not_, raises
+from hexagon.pynamodb.model_base import ModelBase
 from pynamodb.attributes import ListAttribute, NumberAttribute, UnicodeAttribute
 from schema import Schema, SchemaError
-
-from hexagon.pynamodb.model_base import ModelBase
+from unittest.mock import patch
+import unittest
 
 
 class TestModelBase(unittest.TestCase):
-    def test_simple_validation(self):
+    def test_validation_fails_with_default_schema(self):
+
         class MyModel(ModelBase):
             foo = UnicodeAttribute(hash_key=True, range_key=False)
             dur = NumberAttribute(hash_key=False, range_key=True)
 
+        problematic = MyModel(foo=100, dur=100)
         assert_that(
-            calling(MyModel).with_args(
-                foo=10,
-                dur=100,
-            ),
+            calling(problematic.save),
             raises(SchemaError)
-        )
-        assert_that(
-            MyModel(foo='1', dur=10),
-            instance_of(MyModel)
         )
 
     def test_validation_with_custom_schema(self):
@@ -34,10 +28,10 @@ class TestModelBase(unittest.TestCase):
                     'foo': Schema([str])
                 })
 
+        model = MyModel(foo=[1, 2, 3, 100])
+
         assert_that(
-            calling(MyModel).with_args(
-                foo=[1, 2, 3, 100]
-            ),
+            calling(model.save),
             raises(SchemaError)
         )
 
