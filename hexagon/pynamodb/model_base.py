@@ -16,7 +16,13 @@ class ModelBase(Model):
             **attributes: Any
     ) -> None:
         super().__init__(hash_key, range_key, _user_instantiated, **attributes)
+
+    def save(self, condition: Optional[Condition] = None, *, add_version_condition: bool = True) -> Dict[str, Any]:
         self.validate_schema()
+        return super().save(
+            condition,
+            add_version_condition=add_version_condition
+        )
 
     def schema(self):
         # type: () -> Schema
